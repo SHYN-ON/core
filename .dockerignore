@@ -1,0 +1,4 @@
+server/node_modules
+server/error.log
+client/node_modules
+client/dist

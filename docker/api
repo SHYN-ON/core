@@ -1,0 +1,11 @@
+FROM node:latest
+
+WORKDIR /usr/src/shyn
+
+COPY server server
+
+RUN cd server && npm install
+
+EXPOSE 80
+
+CMD cd server && npm run start-dev

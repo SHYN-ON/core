@@ -1,0 +1,48 @@
+version: "3"
+services:
+    api:
+        environment:
+            - DOCKER=true
+            - CHOKIDAR_USEPOLLING=true
+        build:
+            context: .
+            dockerfile: docker/api
+        depends_on:
+            - mongo
+        networks:
+            main:
+                aliases:
+                    - shyn
+        ports:
+            - 80:80
+        volumes:
+            - ./server:/usr/src/shyn/server
+            - /usr/src/shyn/server/node_modules
+    front-end:
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        build:
+            context: .
+            dockerfile: docker/front-end
+        depends_on:
+            - api
+        networks:
+            main:
+                aliases:
+                    - shyn_fe
+        ports:
+            - 8080:8080
+        volumes:
+            - ./client:/usr/src/shyn/client
+            - /usr/src/shyn/client/node_modules
+    mongo:
+        container_name: mongodb
+        image: mongo
+        networks:
+            main:
+                aliases:
+                    - mongo
+        ports:
+            - 27017:27017
+networks:
+    main:

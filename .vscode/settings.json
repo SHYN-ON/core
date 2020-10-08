@@ -1,0 +1,21 @@
+{
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": true,
+	"editor.formatOnPaste": false,
+	"editor.formatOnSave": false,
+	"editor.formatOnType": false,
+	"editor.renderWhitespace": "all",
+	"editor.rulers": [140],
+	"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+	"files.encoding": "utf8",
+	"files.eol": "\n",
+	"files.insertFinalNewline": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"eslint.workingDirectories": [
+		"./client",
+		"./server"
+	]
+}

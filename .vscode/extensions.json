@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"ms-azuretools.vscode-docker",
+		"dbaeumer.vscode-eslint",
+		"tombonnike.vscode-status-bar-format-toggle",
+		"eg2.vscode-npm-script",
+		"christian-kohler.path-intellisense",
+		"esbenp.prettier-vscode",
+		"octref.vetur",
+		"visualstudioexptteam.vscodeintellicode"
+	]
+}
