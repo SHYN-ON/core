@@ -19,7 +19,7 @@ async function setRelatedCount(url) {
 
 	try {
 		let siteReq = await fetch(source + '/site?url=' + url);
-		if (siteReq.status === 403) {
+		if (siteReq.status === 404) {
 			return setTimeout(() => {
 				setRelatedCount(url)
 			}, 5000)

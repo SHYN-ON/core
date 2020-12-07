@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const updateInterval = 480 // in minutes
 
 const SiteSchema = new mongoose.Schema({
 	url: {
@@ -18,11 +17,7 @@ const SiteSchema = new mongoose.Schema({
 	},
 	updatedAt: {
 		type: Date,
-		default: () => new Date(-new Date() + (updateInterval * 60 * 1000))
-	},
-	isUpdating: {
-		type: Boolean,
-		default: false
+		default: () => new Date('1980')
 	},
 	isDeleted: {
 		type: Boolean,

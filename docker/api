@@ -1,6 +1,6 @@
 FROM node:latest
 
-WORKDIR /usr/src/shyn
+WORKDIR /usr/src/core
 
 COPY server server
 

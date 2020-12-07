@@ -7,6 +7,7 @@ const cors = require('cors')
 const CONSTANT = require('./constants')
 const mongooseConnect = require('./services/mongoose')
 const routes = require('./routes')
+const initCronJobs = require('./services/cronJob')
 const app = express()
 
 console.log(Array.from(Array(20), () => '-').join(''))
@@ -14,6 +15,7 @@ console.log(`Starting v${process.env.npm_package_version} in ${CONSTANT.isDevEnv
 
 // Connect to MongoDB via Mongoose
 mongooseConnect().then(() => {
+	initCronJobs()
 	// Use compression
 	app.use(compression())
 

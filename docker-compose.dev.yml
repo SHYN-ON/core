@@ -8,17 +8,17 @@ services:
             context: .
             dockerfile: docker/api
         depends_on:
-            - mongo
+            - core_mongo
         networks:
             main:
                 aliases:
-                    - shyn
+                    - core_api
         ports:
             - 80:80
         volumes:
-            - ./server:/usr/src/shyn/server
-            - /usr/src/shyn/server/node_modules
-    front-end:
+            - ./server:/usr/src/core/server
+            - /usr/src/core/server/node_modules
+    ui:
         environment:
             - CHOKIDAR_USEPOLLING=true
         build:
@@ -29,13 +29,13 @@ services:
         networks:
             main:
                 aliases:
-                    - shyn_fe
+                    - core_ui
         ports:
             - 8080:8080
         volumes:
-            - ./client:/usr/src/shyn/client
-            - /usr/src/shyn/client/node_modules
-    mongo:
+            - ./client:/usr/src/core/client
+            - /usr/src/core/client/node_modules
+    core_mongo:
         container_name: mongodb
         image: mongo
         networks:
