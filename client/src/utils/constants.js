@@ -1,5 +1,5 @@
 const CONSTANT = Object.freeze({
-	title: 'Core – Visual Navigator'
+	title: 'Core'
 })
 
 module.exports = CONSTANT

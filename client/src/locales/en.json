@@ -1,3 +1,5 @@
 {
-  "message": "hello i18n !!"
-} 
+	"title": "Visual Navigator",
+	"noResults": "No results to display for this page",
+	"urlPlaceholder": "Insert URL"
+}

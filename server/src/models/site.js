@@ -27,6 +27,10 @@ const SiteSchema = new mongoose.Schema({
 		type: Date,
 		default: () => new Date('1980')
 	},
+	isUpdating: {
+		type: Boolean,
+		default: false
+	},
 	isDeleted: {
 		type: Boolean,
 		default: false

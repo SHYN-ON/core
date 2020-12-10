@@ -1,6 +1,6 @@
 const express = require('express')
-const SiteModel = require('../models/site')
 const router = express.Router()
+const SiteModel = require('../models/site')
 
 router.get('/', async (req, res) => {
 	if (!req.query && !req.query.url) return res.status(400).send('Request body is missing.')

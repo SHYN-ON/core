@@ -1,94 +1,22 @@
 <style lang="scss">
-	* {
-		box-sizing: border-box;
-		font-family: 'Lato', sans-serif;
-	}
-
-	html,
-	body {
-		width: 100%;
-		height: 100%;
-		padding: 0;
-		margin: 0;
-		overflow: hidden;
-	}
-	#app {
-		width: 100%;
-		height: 100%;
-		padding: 5%;
-		box-sizing: border-box;
-		background-color: #0093e9;
-		background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
-		&.embeded {
-			padding: 10px;
-			header,
-			input {
-				display: none;
-			}
-		}
-	}
-	#graph-container {
-		width: 100%;
-		height: 100%;
-		margin: auto;
-		position: relative;
-		overflow: hidden;
-		background: #fff;
-		border-radius: 5px;
-	}
-	.logo {
-		position: absolute;
-		bottom: 10px;
-		right: 10px;
-		z-index: 9;
-		height: 40px;
-		pointer-events: none;
-	}
-	input {
-		width: 300px;
-		height: 50px;
-		padding: 0 15px;
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 2;
-		background: rgb(55 156 229 / 45%);
-		border: 2px solid #379ce3;
-		border-bottom-right-radius: 5px;
-		border-top: 0;
-		border-left: 0;
-		box-sizing: border-box;
-		color: #000;
-		font-size: 20px;
-		transition: all 0.5s;
-		&:focus {
-			width: 100%;
-			box-shadow: none;
-			outline: none;
-			border-right: 0;
-			border-bottom-right-radius: 0;
-			background: rgb(78 176 247 / 45%);
-		}
-	}
-	.no-results {
-		position: absolute;
-		top: 50%;
-		width: 100%;
-		margin-top: -25px;
-		font-size: 25px;
-		text-align: center;
-		text-transform: uppercase;
-		font-weight: 700;
-	}
+	@import 'styles/main';
 </style>
 
 <template>
 	<div id="app" :class="{ embeded: isEmbeded }">
 		<div id="graph-container">
 			<img src="./assets/logo.png" class="logo" alt="Logo" />
-			<input type="text" v-model="url" @change="setURL" @focus="$event.target.select()" placeholder="Insert URL" autofocus />
+			<input 
+				v-if="!isEmbeded"
+				type="text"
+				v-model="url"
+				@change="setURL"
+				@focus="$event.target.select()"
+				:placeholder="$t('urlPlaceholder')"
+				autofocus 
+			/>
 			<loader v-if="isLoading"></loader>
-			<div v-if="!hasResults" class="no-results">No results to display</div>
+			<div v-if="!hasResults" class="no-results">{{ $t('noResults') }}</div>
 		</div>
 	</div>
 </template>
@@ -279,11 +207,13 @@
 				window.location.search = urlParams
 			}
 		},
-		created() {
+		beforeCreate() {
 			const urlParams = new URLSearchParams(window.location.search)
 			const embed = urlParams.get('embed')
+
 			this.isEmbeded = embed !== null
-			document.title = CONSTANTS.title
+			
+			document.title = `${CONSTANTS.title} - ${this.$t('title')}`
 		},
 		async mounted() {
 			this.onMount()

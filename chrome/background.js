@@ -7,15 +7,16 @@ function isValidUrl(string) {
 	try {
 		url = new URL(string);
 	} catch (_) {
-		return false;  
+		return false;
 	}
 
 	return url.protocol === 'http:' || url.protocol === 'https:';
 }
 
 async function setRelatedCount(url) {
-	if (!isValidUrl(url) || currentUrl !== url) return 
 	chrome.browserAction.setBadgeText({ text: '' });
+
+	if (!isValidUrl(url) || currentUrl !== url) { return; }
 
 	try {
 		let siteReq = await fetch(source + '/site?url=' + url);
