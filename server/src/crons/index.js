@@ -1,5 +1,5 @@
 const siteRelated = require('./siteRelated')
 
 module.exports = [
-	{ name: 'siteRelated', schedule: '* * * * *', job: siteRelated }
+	{ name: 'siteRelated', schedule: '*/30 * * * * *', job: siteRelated }
 ]

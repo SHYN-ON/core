@@ -11,6 +11,14 @@ const SiteSchema = new mongoose.Schema({
 	},
 	color: String,
 	related: [{ type: Object }],
+	upVotes: {
+		type: Number,
+		default: 0
+	},
+	downVotes: {
+		type: Number,
+		default: 0
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now

@@ -261,7 +261,7 @@
 					const siteData = await this.getData()
 					this.initGraph(siteData.data)
 				} catch (err) {
-					if (err.response && err.response.status === 403) {
+					if (err.response && err.response.status === 404) {
 						setTimeout(() => {
 							this.onMount()
 						}, 5000)
