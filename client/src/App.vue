@@ -6,6 +6,11 @@
 	<div id="app" :class="{ embeded: isEmbeded }">
 		<div id="graph-container">
 			<img src="./assets/logo.png" class="logo" alt="Logo" />
+			<div v-if="!isLoading && hasResults && !hasVote" class="controls">
+				{{ $t('isUseful') }}
+				<img src="./assets/vote-up.png" alt="Up vote" @click="vote(true)" />
+				<img src="./assets/vote-down.png" alt="Down vote" @click="vote(false)" />
+			</div>
 			<input 
 				v-if="!isEmbeded"
 				type="text"
@@ -42,7 +47,15 @@
 				edgeColor: '#ccc',
 				bgColor: '#fff',
 				openTimeout: null,
-				clicks: 0
+				clicks: 0,
+				site: '',
+				get hasVote() {
+					return localStorage.getItem(`vote-${this.site}`)
+				},
+				// eslint-disable-next-line
+				set hasVote(value) {
+					localStorage.setItem(`vote-${this.site}`, value)
+				}
 			}
 		},
 		methods: {
@@ -77,6 +90,7 @@
 			},
 			initGraph(data) {
 				if (!data) return
+				this.site = data.url
 				if (!data.related.length) return (this.hasResults = false)
 
 				const nodes = []
@@ -205,9 +219,19 @@
 				urlParams.set('url', this.url)
 
 				window.location.search = urlParams
-			}
+			},
+			async vote (val) {
+				const params = {
+					url: this.url
+				}
+
+				if (!val) params.down = true
+
+				this.hasVote = true
+				this.axios.post('site/vote', params)
+			},
 		},
-		beforeCreate() {
+		created() {
 			const urlParams = new URLSearchParams(window.location.search)
 			const embed = urlParams.get('embed')
 

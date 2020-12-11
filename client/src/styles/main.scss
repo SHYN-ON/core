@@ -40,6 +40,22 @@ body {
 	height: 30px;
 	pointer-events: none;
 }
+.controls {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	z-index: 10;
+	text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+	img {
+		height: 24px;
+		margin: 0 3px;
+		margin-bottom: -4px;
+		cursor: pointer;
+		&:last-child {
+			margin-bottom: -8px;
+		}
+	}
+}
 input {
 	width: 300px;
 	height: 50px;

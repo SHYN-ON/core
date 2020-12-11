@@ -30,7 +30,7 @@ router.post('/vote', async (req, res) => {
 	let site
 
 	try {
-		url = new URL(req.query.url)
+		url = new URL(req.body.url)
 		url = url.host.match(/[^.]*\.[^.]*$/)[0]
 	} catch (_) {
 		return res.status(400).send('Invalid URL parameter.')

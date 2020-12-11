@@ -1,5 +1,6 @@
 {
 	"title": "Visual Navigator",
 	"noResults": "No results to display for this page",
-	"urlPlaceholder": "Insert URL"
+	"urlPlaceholder": "Insert URL",
+	"isUseful": "Find this useful?"
 }
