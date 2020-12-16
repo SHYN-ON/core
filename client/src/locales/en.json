@@ -2,5 +2,7 @@
 	"title": "Visual Navigator",
 	"noResults": "No results to display for this page",
 	"urlPlaceholder": "Insert URL",
-	"isUseful": "Find this useful?"
+	"isUseful": "Find this useful?",
+	"upVote": "Upvote",
+	"downVote": "Downvote"
 }

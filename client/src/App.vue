@@ -8,8 +8,8 @@
 			<img src="./assets/logo.png" class="logo" alt="Logo" />
 			<div v-if="!isLoading && hasResults && !hasVote" class="controls">
 				{{ $t('isUseful') }}
-				<img src="./assets/vote-up.png" alt="Up vote" @click="vote(true)" />
-				<img src="./assets/vote-down.png" alt="Down vote" @click="vote(false)" />
+				<img src="./assets/vote-up.png" alt="Up vote" :title="$t('upVote')" @click="vote(true)" />
+				<img src="./assets/vote-down.png" alt="Down vote" :title="$t('downVote')" @click="vote(false)" />
 			</div>
 			<input
 				v-if="!isEmbeded"
@@ -50,6 +50,10 @@
 				openTimeout: null,
 				clicks: 0,
 				site: '',
+				weights: {
+					min: 9999,
+					max: 0
+				},
 				get hasVote() {
 					return localStorage.getItem(`vote-${this.site}`)
 				},
@@ -63,6 +67,7 @@
 			graphChart() {
 				const d3 = window.d3
 				const d3graph = d3.select('#d3-graph')
+				const vue = this
 
 				let width = parseInt(d3graph.style('width')),
 					height = parseInt(d3graph.style('height')),
@@ -82,7 +87,7 @@
 					selection.each(function(data) {
 						let zoom = d3
 							.zoom()
-							.scaleExtent([1 / 4, 5])
+							.scaleExtent([1 / 2, 5])
 							.on('zoom', zoomed)
 
 						let svg = d3.select(this).call(zoom)
@@ -159,6 +164,7 @@
 
 						const handleMouseOver = function() {
 							let neighbors = getNeighbors(this)
+							this.parentNode.appendChild(this)
 
 							d3.select(this)
 								.transition()
@@ -169,6 +175,7 @@
 								.transition()
 								.select('text')
 								.attr('fill-opacity', 1)
+								.attr('stroke-opacity', 1)
 
 							d3.selectAll(neighbors.nodes)
 								.select('circle')
@@ -179,6 +186,7 @@
 								.select('text')
 								.transition()
 								.attr('fill-opacity', 1)
+								.attr('stroke-opacity', 1)
 
 							d3.selectAll(neighbors.links)
 								.transition()
@@ -190,26 +198,29 @@
 							d3.select(this)
 								.select('circle')
 								.transition()
-								.attr('fill', fillNode)
+								.attr('fill', n => n.color || fillNode)
 
 							d3.selectAll('.nodes text')
-								.filter(d => d.weight < 17)
+								.filter(d => d.weight < vue.weights.max / 2)
 								.transition()
 								.attr('fill-opacity', 0)
+								.attr('stroke-opacity', 0)
 
 							d3.selectAll(neighbors.nodes)
 								.select('circle')
 								.transition()
-								.attr('fill', fillNode)
+								.attr('fill', n => n.color || fillNode)
 
 							d3.selectAll(neighbors.links)
 								.transition()
 								.attr('stroke', strokeLink)
 						}
 
-						let g = svg.append('g').attr('id', 'force-directed-graph')
+						const handleMouseUp = function(node) {
+							if (node.url) window.open(`https://${node.url}`)
+						}
 
-						svg.call(zoom.transform, d3.zoomIdentity.scale(0.6).translate(width / 2, height / 2))
+						let g = svg.append('g').attr('id', 'force-directed-graph')
 
 						let links = g
 							.append('g')
@@ -236,11 +247,12 @@
 							.on('mouseout', handleMouseOut)
 							.on('click', handleMouseOver)
 							.call(dragNode(simulation))
+							.on('click', handleMouseUp)
 
 						nodes
 							.append('circle')
 							.attr('r', d => radius(d))
-							.attr('fill', fillNode)
+							.attr('fill', n => n.color || fillNode)
 							.attr('stroke', strokeNode)
 							.attr('stroke-width', 3)
 
@@ -249,11 +261,32 @@
 							.text(d => d.label.toUpperCase())
 							.attr('fill', fillText)
 							.attr('fill-opacity', 1)
-							.attr('font-size', d => d.weight * 0.7)
+							.attr('stroke-opacity', 1)
+							.attr('font-size', d => {
+								let perc = d.weight / vue.weights.max
+								return Math.max(9, 15 * perc)
+							})
 							.attr('text-anchor', 'middle')
-							.filter(d => d.weight < 17)
+							.filter(d => d.weight < vue.weights.max / 2)
 							.attr('fill-opacity', 0)
-							.attr('font-size', 15)
+							.attr('stroke-opacity', 0)
+
+						simulation.on('end', () => {
+							if (!vue.isLoading) return
+							let bounds = g.node().getBBox()
+							let parent = g.node().parentElement
+							let fullWidth = parent.clientWidth,
+								fullHeight = parent.clientHeight
+							let widthz = bounds.width,
+								heightz = bounds.height
+							let midX = bounds.x + widthz / 2,
+								midY = bounds.y + heightz / 2
+							let scale = 0.75 / Math.max(widthz / fullWidth, heightz / fullHeight)
+							let translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY]
+
+							svg.call(zoom.transform, d3.zoomIdentity.scale(scale).translate(translate[0], translate[1]))
+							vue.isLoading = false
+						})
 
 						simulation.on('tick', () => {
 							links
@@ -338,20 +371,21 @@
 					.strokeNode('#494853')
 					.fillNodeHover('#9d3a43')
 					.fillNeighbors('#b38a38')
-					.fillText('#000')
+					.fillText('#fff')
 					.strokeLinkHover('#494853')
 
 				d3graph.datum(this.formatData(data)).call(graph)
-
-				this.isLoading = false
 			},
 			formatData(data) {
 				function safeId(str) {
 					return str.replace(/\W/g, '_')
 				}
+				function genLabel(url) {
+					return url.split('.')[0]
+				}
 				const nodes = []
 				const edges = []
-				const list = [{ url: data.url, color: data.color || '#000' }]
+				const list = [{ url: data.url, color: data.color }]
 				const ids = []
 
 				data.related.forEach(rel => {
@@ -374,7 +408,9 @@
 					if (ids.indexOf(node.url) !== -1) return
 					nodes.push({
 						id: safeId(node.url),
-						label: node.url
+						url: node.url,
+						label: genLabel(node.url),
+						color: node.color
 					})
 					ids.push(node.url)
 				})
@@ -384,11 +420,13 @@
 				}
 
 				// Counts the number each nodes have with each other
-				graphData.nodes.forEach(function(d) {
+				graphData.nodes.forEach(d => {
 					d.weight = graphData.edges.reduce(function(total, link) {
 						if (d.id === link.source || d.id === link.target) total += 1
 						return total
 					}, 0)
+					this.weights.min = Math.min(this.weights.min, d.weight)
+					this.weights.max = Math.max(this.weights.max, d.weight)
 				})
 
 				return graphData

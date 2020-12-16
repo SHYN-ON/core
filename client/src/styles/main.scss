@@ -39,6 +39,9 @@ body {
 		cursor: pointer;
 	}
 	text {
+		stroke: #000;
+		stroke-width: 0.25px;
+		font-weight: 1000;
 		pointer-events: none;
 	}
 }
