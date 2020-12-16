@@ -8,17 +8,6 @@ import store from 'store'
 
 Vue.config.productionTip = false
 
-window.sigma.classes.graph.addMethod('neighbors', function(nodeId) {
-	let k,
-		neighbors = {},
-		index = this.allNeighborsIndex[nodeId] || {}
-
-	for (k in index) {
-		neighbors[k] = this.nodesIndex[k]
-	}
-	return neighbors
-})
-
 new Vue({
 	i18n,
 	store,
