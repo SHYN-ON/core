@@ -4,7 +4,9 @@
 	"private": true,
 	"scripts": {
 		"start": "NODE_ENV=production PORT=8080 node src/index.js",
-		"start-dev": "NODE_ENV=development nodemon src/index.js"
+		"start-dev": "NODE_ENV=development nodemon src/index.js",
+		"checkUp": "ACTION=check node src/updating.js",
+		"checkFix": "ACTION=fix node src/updating.js"
 	},
 	"dependencies": {
 		"axios": "^0.19.2",

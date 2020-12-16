@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const CONSTANT = require('../constants')
 const SiteModel = require('../models/site')
 const fetchRelatedSites = require('../services/siteRelated')
@@ -31,7 +32,9 @@ module.exports = async () => {
 
 				site.color = await getFaviconColor(site.url)
 				site.updatedAt = new Date()
-			} catch(_) {}
+			} catch (_) {
+				console.info('Failed to update "%d".', site.url)
+			}
 
 			site.isUpdating = false
 			await site.save()
@@ -39,6 +42,5 @@ module.exports = async () => {
 	}
 
 	const endTime = process.hrtime(startTime)
-	// eslint-disable-next-line no-console
 	console.info('Execution time: %ds %dms', endTime[0], Math.round(endTime[1] / 1000000))
 }
