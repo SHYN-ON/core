@@ -6,7 +6,7 @@ module.exports = {
 			modules: [path.resolve('./src'), path.resolve('./node_modules')]
 		}
 	},
-	outputDir: '../server/public',
+	outputDir: '../dist/public',
 	pluginOptions: {
 		i18n: {
 			locale: 'en',

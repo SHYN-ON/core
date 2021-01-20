@@ -79,6 +79,7 @@
 					strokeLink = d3.rgb(150, 150, 150, 0.6),
 					strokeLinkHover = d3.rgb(50, 50, 50, 1),
 					minRadius = 5,
+					transitonDelay = null,
 					radius = function(node) {
 						return minRadius + node.weight * 0.7
 					}
@@ -171,26 +172,36 @@
 								.select('circle')
 								.attr('fill', fillNodeHover)
 
-							d3.select(this)
-								.transition()
-								.select('text')
-								.attr('fill-opacity', 1)
-								.attr('stroke-opacity', 1)
+							// d3.select(this)
+							// 	.transition()
+							// 	.select('text')
+							// 	.attr('fill-opacity', 1)
+							// 	.attr('stroke-opacity', 1)
+
+							// d3.selectAll(neighbors.nodes)
+							// 	.select('text')
+							// 	.transition()
+							// 	.attr('fill-opacity', 1)
+							// 	.attr('stroke-opacity', 1)
 
 							d3.selectAll(neighbors.nodes)
 								.select('circle')
 								.transition()
 								.attr('fill', fillNeighbors)
 
-							d3.selectAll(neighbors.nodes)
-								.select('text')
-								.transition()
-								.attr('fill-opacity', 1)
-								.attr('stroke-opacity', 1)
-
 							d3.selectAll(neighbors.links)
 								.transition()
 								.attr('stroke', strokeLinkHover)
+
+							if (this.__data__.weight > vue.weights.max / 2) return
+							transitonDelay = setTimeout(() => {
+								const txt = d3
+									.select(this)
+									.select('text')
+									.text()
+
+								tooltip.text(txt).style('opacity', 1)
+							}, 400)
 						}
 
 						const handleMouseOut = function() {
@@ -200,11 +211,11 @@
 								.transition()
 								.attr('fill', n => n.color || fillNode)
 
-							d3.selectAll('.nodes text')
-								.filter(d => d.weight < vue.weights.max / 2)
-								.transition()
-								.attr('fill-opacity', 0)
-								.attr('stroke-opacity', 0)
+							// d3.selectAll('.nodes text')
+							// 	.filter(d => d.weight < vue.weights.max / 2)
+							// 	.transition()
+							// 	.attr('fill-opacity', 0)
+							// 	.attr('stroke-opacity', 0)
 
 							d3.selectAll(neighbors.nodes)
 								.select('circle')
@@ -214,11 +225,23 @@
 							d3.selectAll(neighbors.links)
 								.transition()
 								.attr('stroke', strokeLink)
+
+							clearTimeout(transitonDelay)
+							tooltip.style('opacity', 0)
 						}
 
 						const handleMouseUp = function(node) {
 							if (node.url) window.open(`https://${node.url}`)
 						}
+
+						const tooltip = d3
+							.select('body')
+							.append('div')
+							.attr('id', 'tooltip')
+
+						d3.select('body').on('mousemove', function() {
+							tooltip.style('left', d3.event.pageX + 10 + 'px').style('top', d3.event.pageY + 10 + 'px')
+						})
 
 						let g = svg.append('g').attr('id', 'force-directed-graph')
 
@@ -369,8 +392,8 @@
 				const graph = this.graphChart()
 					.fillNode('#758686')
 					.strokeNode('#494853')
-					.fillNodeHover('#9d3a43')
-					.fillNeighbors('#b38a38')
+					.fillNodeHover('#fff')
+					.fillNeighbors('#0093e9')
 					.fillText('#fff')
 					.strokeLinkHover('#494853')
 
@@ -378,7 +401,7 @@
 			},
 			formatData(data) {
 				function safeId(str) {
-					return str.replace(/\W/g, '_')
+					return '_' + str.replace(/\W/g, '_')
 				}
 				function genLabel(url) {
 					return url.split('.')[0]
